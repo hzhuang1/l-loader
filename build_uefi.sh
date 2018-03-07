@@ -43,15 +43,16 @@ esac
 case "${CLANG}" in
 "CLANG_3_9")
 	export AARCH64_TOOLCHAIN=CLANG38
-	export CC=/usr/bin/clang
+	TC_FLAGS="CC=clang"
 	;;
 "CLANG_5_0")
 	export AARCH64_TOOLCHAIN=CLANG38
-	export CC=/usr/bin/clang
+	TC_FLAGS="CC=clang"
 	;;
 "")
 	# CLANG is not used.
 	export GCC5_AARCH64_PREFIX=aarch64-linux-gnu-
+	TC_FLAGS=""
 	;;
 *)
 	echo "Not supported CLANG:${CLANG}"
@@ -141,11 +142,7 @@ esac
 case "${PLATFORM}" in
 "hikey")
 	cd ${BUILD_PATH}/atf-fastboot
-	if [ $CLANG ]; then
-		CROSS_COMPILE=aarch64-linux-gnu- PATH=${AARCH64_GCC}:${PATH} make PLAT=${PLATFORM} DEBUG=${BUILD_DEBUG}
-	else
-		CROSS_COMPILE=aarch64-linux-gnu- make PLAT=${PLATFORM} DEBUG=${BUILD_DEBUG}
-	fi
+	CROSS_COMPILE=aarch64-linux-gnu- make ${TC_FLAGS} PLAT=${PLATFORM} DEBUG=${BUILD_DEBUG}
 	if [ $? != 0 ]; then
 		echo "Fail to build fastboot ($?)"
 		exit
@@ -213,7 +210,7 @@ function do_build()
 	cd ${BUILD_PATH}/arm-trusted-firmware
 	BL32=../optee_os/out/arm-plat-hikey/core/tee-pager.bin
 	BL33=${EDK2_OUTPUT_DIR}/FV/BL33_AP_UEFI.fd
-	CROSS_COMPILE=aarch64-linux-gnu- PATH=${AARCH64_GCC}:${PATH} make PLAT=${PLATFORM} SCP_BL2=${SCP_BL2} SPD=opteed BL32=${BL32} BL33=${BL33} DEBUG=${BUILD_DEBUG} all fip
+	CROSS_COMPILE=aarch64-linux-gnu- make ${TC_FLAGS} PLAT=${PLATFORM} SCP_BL2=${SCP_BL2} SPD=opteed BL32=${BL32} BL33=${BL33} DEBUG=${BUILD_DEBUG} all fip
 }
 
 # Build UEFI & ARM Trusted Firmware
@@ -228,9 +225,9 @@ do_symlink
 case "${PLATFORM}" in
 "hikey")
 	# Patch aarch64 mode on bl1.bin. Then bind it with fastboot.
-	make -f ${PLATFORM}.mk recovery.bin
+	make ${TC_FLAGS} -f ${PLATFORM}.mk recovery.bin
 	# Patch aarch64 mode on bl2.bin
-	make -f ${PLATFORM}.mk l-loader.bin
+	make ${TC_FLAGS} -f ${PLATFORM}.mk l-loader.bin
 
 	# Generate partition table
 	if [ $GENERATE_PTABLE ]; then
