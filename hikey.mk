@@ -1,6 +1,13 @@
 CROSS_COMPILE?=arm-linux-gnueabihf-
-CC=$(CROSS_COMPILE)gcc
-LD=$(CROSS_COMPILE)ld
+
+ifeq ($(notdir $(CC)), clang)
+	CC=clang
+	LD=ld.lld
+	CFLAGS=-target arm-linux-gnueabihf
+else
+	CC=$(CROSS_COMPILE)gcc
+	LD=$(CROSS_COMPILE)ld
+endif
 OBJCOPY=$(CROSS_COMPILE)objcopy
 
 BL1=bl1.bin
@@ -12,7 +19,7 @@ PTABLE_LST?=aosp-8g
 all: l-loader.bin prm_ptable.img recovery.bin
 
 %.o: %.S
-	$(CC) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 l-loader.bin: start.o $(BL2)
 	$(LD) -Bstatic -Tl-loader.lds -Ttext 0xf9800800 start.o -o loader
