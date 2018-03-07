@@ -75,6 +75,8 @@ update-alternatives --install /usr/bin/llvm-size llvm-size /usr/bin/llvm-size-3.
 update-alternatives --install /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-5.0 100
 update-alternatives --install /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-3.9 60
 update-alternatives --install /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-3.8 50
+update-alternatives --install /usr/bin/lld lld /usr/bin/lld-5.0 100
+update-alternatives --install /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-5.0 100
 
 update-alternatives --set clang /usr/bin/clang-5.0
 update-alternatives --set clang++ /usr/bin/clang++-5.0
@@ -99,3 +101,5 @@ update-alternatives --set llvm-ranlib /usr/bin/llvm-ranlib-5.0
 update-alternatives --set llvm-rtdyld /usr/bin/llvm-rtdyld-5.0
 update-alternatives --set llvm-size /usr/bin/llvm-size-5.0
 update-alternatives --set llvm-tblgen /usr/bin/llvm-tblgen-5.0
+update-alternatives --set lld /usr/bin/lld-5.0
+update-alternatives --set ld.lld /usr/bin/ld.lld-5.0
